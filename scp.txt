@@ -1,0 +1,174 @@
+🔹 Real-time Use Case (for you)
+
+Since you work with AWS EC2:
+
+Upload app files to EC2
+
+Download logs from EC2
+
+Copy backups between servers
+
+🔹 Basic SCP Syntax
+scp [options] source destination
+
+🔹 1. Copy file from LOCAL → EC2
+
+scp -i key.pem file.txt ec2-user@<EC2-PUBLIC-IP>:/home/ec2-user/
+
+Example:
+scp -i mykey.pem app.zip ec2-user@13.234.45.67:/home/ec2-user/
+
+✔️ This uploads app.zip to EC2
+
+🔹 2. Copy file from EC2 → LOCAL
+scp -i key.pem ec2-user@<EC2-IP>:/home/ec2-user/file.txt .
+
+✔️ Downloads file to your current folder
+
+🔹 3. Copy a folder (Important 🔥)
+scp -i key.pem -r folder/ ec2-user@<EC2-IP>:/home/ec2-user/
+
+👉 -r = recursive (for directories)
+
+🔹 4. Copy between two servers
+
+scp -i key.pem user1@server1:/file user2@server2:/destination
+
+🔹 SCP Options (Important)
+
+Option	Meaning
+-i	Identity file (PEM key)
+-r	Copy directories
+-P	Custom SSH port
+-v	Debug mode
+
+🔹 How to Setup SCP (Step-by-Step)
+✅ Step 1: Install SSH (if not installed)
+On Linux / WSL:
+
+Already available
+
+On Windows:
+
+Use:
+
+Git Bash OR
+
+WSL OR
+
+PowerShell (latest versions support SCP)
+
+✅ Step 2: Get your EC2 Key (.pem)
+
+From AWS:
+
+Go to EC2
+
+Download .pem file
+
+✅ Step 3: Give permission to key
+
+chmod 400 mykey.pem
+
+👉 Without this, SCP will fail
+
+✅ Step 4: Test SSH first
+
+ssh -i mykey.pem ec2-user@<EC2-IP>
+
+✔️ If SSH works → SCP will work
+
+🔹 Example Full Workflow
+
+Upload app to EC2:
+scp -i mykey.pem -r my-app/ ec2-user@13.234.45.67:/home/ec2-user/
+
+Login and deploy:
+ssh -i mykey.pem ec2-user@13.234.45.67
+
+cd my-app
+
+docker build -t app .
+
+docker run -d -p 80:80 app
+
+🔹 Common Errors & Fixes
+
+❌ Permission denied
+
+✔️ Fix:
+
+chmod 400 mykey.pem
+
+❌ Connection refused
+
+✔️ Check:
+
+EC2 is running
+
+Security Group allows port 22 (SSH)
+
+
+❌ Wrong username
+
+AMI	Username
+
+Amazon Linux	ec2-user
+
+Ubuntu	ubuntu
+
+CentOS	centos
+
+🔹 SCP vs SFTP (Important Interview Question 🔥)
+
+SCP	SFTP
+
+Simple copy	Interactive
+
+Faster	Slightly slower
+
+No navigation	Can browse directories
+
+🔹 Pro Tips (DevOps Level 🚀)
+
+Use SCP in CI/CD pipelines to push builds
+
+Combine with:
+
+SSH scripts
+
+Docker deployments
+
+Use .pem securely (never upload to GitHub ❌)
+
+🔹 When NOT to use SCP
+
+Large file transfers → use rsync
+
+Continuous sync → use automation tools
+
+🔹 Alternative (Better than SCP sometimes)
+
+👉 rsync
+
+rsync -avz -e "ssh -i key.pem" folder/ ec2-user@IP:/path
+
+✔️ Faster
+✔️ Only transfers changes
+
+🔹 Simple Summary
+
+👉 SCP = Secure way to copy files using SSH
+👉 No extra setup needed
+👉 Mostly used for EC2 + DevOps workflows
+
+If you want next level 🔥
+I can teach you:
+
+SCP in GitLab CI/CD pipeline
+
+SCP with Kubernetes pods
+
+SCP vs rsync deep comparison
+
+Just tell 👍
